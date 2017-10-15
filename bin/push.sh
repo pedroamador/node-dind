@@ -2,4 +2,4 @@
 
 VERSION=$1
 
-docker push redpandaci/node-dind:$VERSION .
+docker push redpandaci/node-dind:$VERSION
