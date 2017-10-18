@@ -10,7 +10,7 @@ NODE_DIND_VERSION=test
 EXPECTED_NODE_VERSION=v8.5.0
 EXPECTED_DOCKER_VERSION=17.10.0-ce-rc2
 EXPECTED_DOCKER_COMPOSE_VERSION=1.16.1
-CONTAINER=$(docker run --privileged --rm -d redpandaci/node-dind:$NODE_DIND_VERSION)
+CONTAINER=$(docker run --privileged -d redpandaci/node-dind:$NODE_DIND_VERSION sleep 300)
 
 echo "\n --${blue}TEST node-dind:$NODE_DIND_VERSION${reset}-- \n"
 
@@ -49,6 +49,6 @@ else
   exit 1
 fi
 
-DESTROY=$(docker kill $CONTAINER)
+DESTROY=$(docker rm -f $CONTAINER)
 echo "Destroy container $DESTROY"
 exit 0
