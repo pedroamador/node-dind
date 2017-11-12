@@ -1,18 +1,22 @@
 #!groovy
 
-@Library('github.com/red-panda-ci/jenkins-pipeline-library@develop') _
+@Library('github.com/red-panda-ci/jenkins-pipeline-library@2.1.0') _
 
 // Initialize global config
 cfg = jplConfig('node-dind', 'backend' ,'', [hipchat: '', slack: '', email: 'redpandaci+node-dind@gmail.com'])
+String tag
+if (cfg.BRANCH_NAME.startsWith('release/v')) {
+    tag = cfg.BRANCH_NAME.split("/")[1]
+}
 
 pipeline {
     agent none
 
     stages {
-        stage ('Checkout') {
+        stage ('Initialize') {
             agent { label 'docker' }
             steps  {
-                jplCheckoutSCM(cfg)
+                jplStart(cfg)
             }
         }
         stage('Sonar analysis') {
@@ -26,7 +30,7 @@ pipeline {
         stage ('Build') {
             agent { label 'docker' }
             steps  {
-                sh 'bin/build.sh test; bin/build.sh latest'
+                jplDockerPush (cfg, "redpandaci/node-dind", "test", "https://registry.hub.docker.com", "redpandaci-docker-credentials")
             }
         }
         stage ('Test') {
@@ -42,20 +46,12 @@ pipeline {
                 jplPromoteBuild(cfg)
             }
         }
-        stage ('Promote to master') {
-            agent { label 'docker' }
-            when { expression { cfg.BRANCH_NAME.startsWith('release/v') && cfg.promoteBuild } }
-            steps {
-                deleteDir()
-                sh "git clone git@github.com:red-panda-ci/node-dind.git . -b ${cfg.BRANCH_NAME}"
-                jplPromoteCode(cfg, cfg.BRANCH_NAME, 'master')
-                build(job: 'master', wait: true)
-            }
-        }
         stage ('Release finish') {
             agent { label 'docker' }
-            when { expression { cfg.BRANCH_NAME.startsWith('release/v') && cfg.promoteBuild } }
+            when { expression { cfg.BRANCH_NAME.startsWith('release/v') && cfg.promoteBuild.enabled } }
             steps {
+                jplDockerPush (cfg, "redpandaci/node-dind", "latest", "https://registry.hub.docker.com", "redpandaci-docker-credentials")
+                jplDockerPush (cfg, "redpandaci/node-dind", tag, "https://registry.hub.docker.com", "redpandaci-docker-credentials")
                 jplCloseRelease(cfg)
             }
         }
