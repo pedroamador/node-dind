@@ -30,7 +30,8 @@ pipeline {
         stage ('Build') {
             agent { label 'docker' }
             steps  {
-                jplDockerPush (cfg, "redpandaci/node-dind", "test", "https://registry.hub.docker.com", "redpandaci-docker-credentials")
+                //jplDockerPush (cfg, "redpandaci/node-dind", "test", "https://registry.hub.docker.com", "redpandaci-docker-credentials")
+                sh "bin/build.sh test; bin/push.sh test"
             }
         }
         stage ('Test') {
@@ -50,8 +51,10 @@ pipeline {
             agent { label 'docker' }
             when { expression { cfg.BRANCH_NAME.startsWith('release/v') && cfg.promoteBuild.enabled } }
             steps {
-                jplDockerPush (cfg, "redpandaci/node-dind", "latest", "https://registry.hub.docker.com", "redpandaci-docker-credentials")
-                jplDockerPush (cfg, "redpandaci/node-dind", tag, "https://registry.hub.docker.com", "redpandaci-docker-credentials")
+                //jplDockerPush (cfg, "redpandaci/node-dind", "latest", "https://registry.hub.docker.com", "redpandaci-docker-credentials")
+                //jplDockerPush (cfg, "redpandaci/node-dind", tag, "https://registry.hub.docker.com", "redpandaci-docker-credentials")
+                sh "bin/build.sh latest; bin/push.sh latest"
+                sh "bin/build.sh ${tag}; bin/push.sh ${tag}"
                 jplCloseRelease(cfg)
             }
         }

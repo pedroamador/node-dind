@@ -1,4 +1,4 @@
-FROM docker:rc-dind AS base
+FROM docker:rc-dind
 
 LABEL maintainer Maurice Domínguez <maurice.ronet.dominguez@gmail.com>
 
