@@ -1,3 +1,14 @@
+<a name="0.2.0"></a>
+# 0.2.0 (2017-11-14)
+
+
+### Build
+
+* Use cfg.releaseTagNumber instead cfg.releaseTag to set the docker image version ([2b1bbec223f5f9a86f80c6da46062c373737da40](https://github.com/red-panda-ci/node-dind/commit/2b1bbec223f5f9a86f80c6da46062c373737da40))
+* Use jpl v2.1.1 release ([7c5e7def28a5615e9d7c2dfbe4657944fc1612d3](https://github.com/red-panda-ci/node-dind/commit/7c5e7def28a5615e9d7c2dfbe4657944fc1612d3))
+
+
+
 <a name="0.1.0"></a>
 # 0.1.0 (2017-11-14)
 
@@ -10,6 +21,7 @@
 * Docker error workarround ([9739e65f32d53469b4d4a5673dbe58b47fa45f66](https://github.com/red-panda-ci/node-dind/commit/9739e65f32d53469b4d4a5673dbe58b47fa45f66))
 * Put the right release number of jpl ([004e9205274cdcc15b66530b475c8674c2a8f0a8](https://github.com/red-panda-ci/node-dind/commit/004e9205274cdcc15b66530b475c8674c2a8f0a8))
 * Test with named image base ([1fede82ada50c8ad54fb0c748515f4b3c9a002e9](https://github.com/red-panda-ci/node-dind/commit/1fede82ada50c8ad54fb0c748515f4b3c9a002e9))
+* Update CHANGELOG.md to v0.1.0 with Red Panda JPL ([0148299de041a5a2a70a94deacc15413ff38666f](https://github.com/red-panda-ci/node-dind/commit/0148299de041a5a2a70a94deacc15413ff38666f))
 * Update pipeline ([3f510035a839e31a89f47edee4f5f0931ecc9500](https://github.com/red-panda-ci/node-dind/commit/3f510035a839e31a89f47edee4f5f0931ecc9500))
 * Use jpl cfg.releaseTag key from develop branch ([64e9060cee688310e99587cba5a93274dd54b42d](https://github.com/red-panda-ci/node-dind/commit/64e9060cee688310e99587cba5a93274dd54b42d))
 
