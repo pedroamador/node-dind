@@ -5,14 +5,28 @@
 // Initialize global config
 cfg = jplConfig('node-dind', 'backend' ,'', [hipchat: '', slack: '', email: 'redpandaci+node-dind@gmail.com'])
 
+/**
+
+There is an issue with the jplDockerPush helper caused by a bug in Jenkins + Docker plugin
+
+Refs:
+JENKINS-31507
+JENKINS-44609
+JENKINS-44767
+JENKINS-44836
+
+We should use bash scripts to build & upload images instead helper until the Jenkins + Plugins issues will be resolved
+
+*/
+
 pipeline {
     agent none
 
     stages {
-        stage ('Checkout') {
+        stage ('Initialize') {
             agent { label 'docker' }
             steps  {
-                jplCheckoutSCM(cfg)
+                jplStart(cfg)
             }
         }
         stage('Sonar analysis') {
@@ -26,7 +40,8 @@ pipeline {
         stage ('Build') {
             agent { label 'docker' }
             steps  {
-                sh 'bin/build.sh test; bin/build.sh latest'
+                //jplDockerPush (cfg, "redpandaci/node-dind", "test", "https://registry.hub.docker.com", "redpandaci-docker-credentials")
+                sh "bin/build.sh test; bin/push.sh test"
             }
         }
         stage ('Test') {
@@ -42,20 +57,14 @@ pipeline {
                 jplPromoteBuild(cfg)
             }
         }
-        stage ('Promote to master') {
-            agent { label 'docker' }
-            when { expression { cfg.BRANCH_NAME.startsWith('release/v') && cfg.promoteBuild } }
-            steps {
-                deleteDir()
-                sh "git clone git@github.com:red-panda-ci/node-dind.git . -b ${cfg.BRANCH_NAME}"
-                jplPromoteCode(cfg, cfg.BRANCH_NAME, 'master')
-                build(job: 'master', wait: true)
-            }
-        }
         stage ('Release finish') {
             agent { label 'docker' }
-            when { expression { cfg.BRANCH_NAME.startsWith('release/v') && cfg.promoteBuild } }
+            when { expression { cfg.BRANCH_NAME.startsWith('release/v') && cfg.promoteBuild.enabled } }
             steps {
+                //jplDockerPush (cfg, "redpandaci/node-dind", "latest", "https://registry.hub.docker.com", "redpandaci-docker-credentials")
+                //jplDockerPush (cfg, "redpandaci/node-dind", tag, "https://registry.hub.docker.com", "redpandaci-docker-credentials")
+                sh "bin/build.sh latest; bin/push.sh latest"
+                sh "bin/build.sh ${cfg.releaseTag}; bin/push.sh ${cfg.releaseTag}"
                 jplCloseRelease(cfg)
             }
         }
