@@ -1,5 +1,7 @@
 # node-dind
 
+[![Build Status](http://jenkins.redpandaci.com/buildStatus/icon?job=red-panda-ci/node-dind/develop)](https://jenkins.redpandaci.com/job/red-panda-ci/job/node-dind/job/develop/)
+
 _Node image with docker in docker strategy used as base image._
 
 _Supported tags and respective `Dockerfile` links:_
