@@ -1,9 +1,10 @@
-<a name="0.2.0"></a>
-# 0.2.0 (2017-11-14)
+<a name="1.0.0"></a>
+# 1.0.0 (2017-11-14)
 
 
 ### Build
 
+* Update CHANGELOG.md to v0.2.0 with Red Panda JPL ([b3e11040ac77553e1357a70a642c9ac45f638424](https://github.com/red-panda-ci/node-dind/commit/b3e11040ac77553e1357a70a642c9ac45f638424))
 * Use cfg.releaseTagNumber instead cfg.releaseTag to set the docker image version ([2b1bbec223f5f9a86f80c6da46062c373737da40](https://github.com/red-panda-ci/node-dind/commit/2b1bbec223f5f9a86f80c6da46062c373737da40))
 * Use jpl v2.1.1 release ([7c5e7def28a5615e9d7c2dfbe4657944fc1612d3](https://github.com/red-panda-ci/node-dind/commit/7c5e7def28a5615e9d7c2dfbe4657944fc1612d3))
 
