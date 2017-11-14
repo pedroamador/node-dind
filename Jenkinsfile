@@ -57,6 +57,7 @@ pipeline {
                 jplPromoteBuild(cfg)
             }
         }
+
         stage ('Release finish') {
             agent { label 'docker' }
             when { expression { cfg.BRANCH_NAME.startsWith('release/v') && cfg.promoteBuild.enabled } }
@@ -64,7 +65,7 @@ pipeline {
                 //jplDockerPush (cfg, "redpandaci/node-dind", "latest", "https://registry.hub.docker.com", "redpandaci-docker-credentials")
                 //jplDockerPush (cfg, "redpandaci/node-dind", tag, "https://registry.hub.docker.com", "redpandaci-docker-credentials")
                 sh "bin/build.sh latest; bin/push.sh latest"
-                sh "bin/build.sh ${cfg.releaseTag}; bin/push.sh ${cfg.releaseTag}"
+                sh "bin/build.sh ${cfg.releaseTagNumber}; bin/push.sh ${cfg.releaseTagNumber}"
                 jplCloseRelease(cfg)
             }
         }
