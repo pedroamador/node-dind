@@ -1,13 +1,23 @@
 #!groovy
 
-@Library('github.com/red-panda-ci/jenkins-pipeline-library@v2.1.0') _
+@Library('github.com/red-panda-ci/jenkins-pipeline-library@develop') _
 
 // Initialize global config
 cfg = jplConfig('node-dind', 'backend' ,'', [hipchat: '', slack: '', email: 'redpandaci+node-dind@gmail.com'])
-String tag
-if (cfg.BRANCH_NAME.startsWith('release/v')) {
-    tag = cfg.BRANCH_NAME.split("/")[1]
-}
+
+/**
+
+There is an issue with the jplDockerPush helper caused by a bug in Jenkins + Docker plugin
+
+Refs:
+JENKINS-31507
+JENKINS-44609
+JENKINS-44767
+JENKINS-44836
+
+We should use bash scripts to build & upload images instead helper until the Jenkins + Plugins issues will be resolved
+
+*/
 
 pipeline {
     agent none
@@ -30,7 +40,8 @@ pipeline {
         stage ('Build') {
             agent { label 'docker' }
             steps  {
-                jplDockerPush (cfg, "redpandaci/node-dind", "test", "https://registry.hub.docker.com", "redpandaci-docker-credentials")
+                //jplDockerPush (cfg, "redpandaci/node-dind", "test", "https://registry.hub.docker.com", "redpandaci-docker-credentials")
+                sh "bin/build.sh test; bin/push.sh test"
             }
         }
         stage ('Test') {
@@ -50,8 +61,10 @@ pipeline {
             agent { label 'docker' }
             when { expression { cfg.BRANCH_NAME.startsWith('release/v') && cfg.promoteBuild.enabled } }
             steps {
-                jplDockerPush (cfg, "redpandaci/node-dind", "latest", "https://registry.hub.docker.com", "redpandaci-docker-credentials")
-                jplDockerPush (cfg, "redpandaci/node-dind", tag, "https://registry.hub.docker.com", "redpandaci-docker-credentials")
+                //jplDockerPush (cfg, "redpandaci/node-dind", "latest", "https://registry.hub.docker.com", "redpandaci-docker-credentials")
+                //jplDockerPush (cfg, "redpandaci/node-dind", tag, "https://registry.hub.docker.com", "redpandaci-docker-credentials")
+                sh "bin/build.sh latest; bin/push.sh latest"
+                sh "bin/build.sh ${cfg.releaseTag}; bin/push.sh ${cfg.releaseTag}"
                 jplCloseRelease(cfg)
             }
         }
